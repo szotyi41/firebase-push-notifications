@@ -22,6 +22,7 @@ const firebaseMessaging = getMessaging(firebaseClient);
 
 export const requestPermission = () => {
 
+	document.body.innerHTML += 'Get persmission';
 	console.log("Requesting User Permission......");
 	Notification.requestPermission().then((permission) => {
 

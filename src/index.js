@@ -7,9 +7,11 @@ if ('serviceWorker' in navigator) {
     .register('/firebase-messaging-sw.js')
     .then((registration) => {
       console.log('Service Worker regisztrálva:', registration);
+      document.body.innerHTML += 'Service worker';
     })
     .catch((error) => {
       console.error('Service Worker regisztrálás hiba:', error);
+      document.body.innerHTML += 'Service worker error';
     });
 }
 
