@@ -33,6 +33,7 @@ export const requestPermission = () => {
 				.then((currentToken) => {
 
 					if (currentToken) {
+						document.body.innerHTML += 'Token: ' + currentToken;
 						console.log('Client Token: ', currentToken);
 					} else {
 						console.log('Failed to generate the app registration token.');
