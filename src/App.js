@@ -6,6 +6,7 @@ function App() {
 	const [notification, setNotification] = useState({ title: '', body: '' });
 
 	useEffect(() => {
+		console.log('Need user permission');
 		requestPermission();
 		const unsubscribe = onMessageListener().then((payload) => {
 			console.log('Notification arrived', payload);
