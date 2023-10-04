@@ -21,40 +21,63 @@ const firebaseClient = initializeApp(firebaseConfig);
 const firebaseMessaging = getMessaging(firebaseClient);
 
 
+function askNotificationPermission() {
+	return new Promise((resolve, reject) => {
+		if (checkNotificationPromise()) {
+			Notification.requestPermission().then(resolve)
+		} else {
+			Notification.requestPermission(resolve)
+		}
+	})
+}
+
+function checkNotificationPromise() {
+	try {
+		Notification.requestPermission().then();
+	} catch (e) {
+		return false;
+	}
+
+	return true;
+}
+
 export const requestPermission = async () => {
 
 	document.body.innerHTML += 'Get persmission';
 	console.log("Requesting User Permission......");
-	const permission = await Notification.requestPermission();
 
-	if (permission === "granted") {
+	askNotificationPermission().then(permission => {
 
-		console.log("Notification User Permission Granted.");
-		return getToken(firebaseMessaging, { vapidKey: keyPair })
-			.then((currentToken) => {
+		if (permission === "granted") {
 
-				if (currentToken) {
-					document.body.innerHTML += 'Token: ' + currentToken;
-					console.log('Client Token: ', currentToken);
-				} else {
-					document.body.innerHTML += 'Failed to generate the app registration token.';
-					console.log('Failed to generate the app registration token.');
-				}
-			})
-			.catch((err) => {
-				document.body.innerHTML += 'An error occurred when requesting to receive the token.' + err.toString();
-				console.log('An error occurred when requesting to receive the token.', err);
-			});
-	} else {
-		document.body.innerHTML += "User Permission Denied." + permission;
-		console.log("User Permission Denied.", permission);
-	}
+			console.log("Notification User Permission Granted.");
+			return getToken(firebaseMessaging, { vapidKey: keyPair })
+				.then((currentToken) => {
+
+					if (currentToken) {
+						document.body.innerHTML += 'Token: ' + currentToken;
+						console.log('Client Token: ', currentToken);
+					} else {
+						document.body.innerHTML += 'Failed to generate the app registration token.';
+						console.log('Failed to generate the app registration token.');
+					}
+				})
+				.catch((err) => {
+					document.body.innerHTML += 'An error occurred when requesting to receive the token.' + err.toString();
+					console.log('An error occurred when requesting to receive the token.', err);
+				});
+		} else {
+			document.body.innerHTML += "User Permission Denied." + permission;
+			console.log("User Permission Denied.", permission);
+		}
+
+	});
 
 }
 
 export const onMessageListener = () =>
-  new Promise((resolve) => {
-    onMessage(firebaseMessaging, (payload) => {
-      resolve(payload);
-    });
-});
+	new Promise((resolve) => {
+		onMessage(firebaseMessaging, (payload) => {
+			resolve(payload);
+		});
+	});
