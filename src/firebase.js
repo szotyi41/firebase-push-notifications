@@ -36,15 +36,16 @@ export const requestPermission = () => {
 						document.body.innerHTML += 'Token: ' + currentToken;
 						console.log('Client Token: ', currentToken);
 					} else {
+						document.body.innerHTML += 'Failed to generate the app registration token.';
 						console.log('Failed to generate the app registration token.');
 					}
 				})
 				.catch((err) => {
-
+					document.body.innerHTML += 'An error occurred when requesting to receive the token.' + err.toString();
 					console.log('An error occurred when requesting to receive the token.', err);
 				});
 		} else {
-
+			document.body.innerHTML += "User Permission Denied.";
 			console.log("User Permission Denied.");
 		}
 	});
