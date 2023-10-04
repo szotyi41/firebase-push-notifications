@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 
@@ -24,7 +25,7 @@ export const requestPermission = () => {
 
 	document.body.innerHTML += 'Get persmission';
 	console.log("Requesting User Permission......");
-	Notification.requestPermission().then((permission) => {
+	firebaseMessaging.requestPermission().then((permission) => {
 
 		if (permission === "granted") {
 
