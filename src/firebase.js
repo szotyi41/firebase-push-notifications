@@ -39,35 +39,39 @@ async function handlePermission() {
 }
 
 export const getPermission = async () => {
+	return new Promise(async (resolve, reject) => {
+		document.body.innerHTML += 'Get persmission';
+		console.log("Requesting User Permission......");
 
-	document.body.innerHTML += 'Get persmission';
-	console.log("Requesting User Permission......");
+		const permission = await handlePermission();
 
-	const permission = await handlePermission();
+		if (permission === "granted") {
 
-	if (permission === "granted") {
+			console.log("Notification User Permission Granted.");
+			return getToken(firebaseMessaging, { vapidKey: keyPair })
+				.then((currentToken) => {
 
-		console.log("Notification User Permission Granted.");
-		return getToken(firebaseMessaging, { vapidKey: keyPair })
-			.then((currentToken) => {
-
-				if (currentToken) {
-					document.body.innerHTML += 'Token: ' + currentToken;
-					console.log('Client Token: ', currentToken);
-				} else {
-					document.body.innerHTML += 'Failed to generate the app registration token.';
-					console.log('Failed to generate the app registration token.');
-				}
-			})
-			.catch((err) => {
-				document.body.innerHTML += 'An error occurred when requesting to receive the token.' + err.toString();
-				console.log('An error occurred when requesting to receive the token.', err);
-			});
-	} else {
-		document.body.innerHTML += "User Permission Denied." + permission;
-		console.log("User Permission Denied.", permission);
-	}
-
+					if (currentToken) {
+						document.body.innerHTML += 'Token: ' + currentToken;
+						console.log('Client Token: ', currentToken);
+						resolve(currentToken);
+					} else {
+						document.body.innerHTML += 'Failed to generate the app registration token.';
+						console.log('Failed to generate the app registration token.');
+						reject('Failed to generate the app registration token.');
+					}
+				})
+				.catch((err) => {
+					document.body.innerHTML += 'An error occurred when requesting to receive the token.' + err.toString();
+					console.log('An error occurred when requesting to receive the token.', err);
+					reject('An error occurred when requesting to receive the token.' + err.toString());
+				});
+		} else {
+			document.body.innerHTML += "User Permission Denied." + permission;
+			console.log("User Permission Denied.", permission);
+			reject('User Permission Denied.' + permission);
+		}
+	})
 
 }
 
