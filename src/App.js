@@ -7,7 +7,9 @@ function App() {
 	const [permission, setPermission] = useState('pending');
 
 	const getUserPermission = async () => {
-		setPermission(await getPermission());
+		const p = await getPermission();
+
+		setPermission(p);
 
 		onMessageListener().then((payload) => {
 			console.log('Notification arrived', payload);
